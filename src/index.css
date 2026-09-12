@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  font-size: 18px;
+  color-scheme: light;
+  --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --series-1: #2a78d6;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #f4f4f2;
+  color: var(--text-primary);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+/* Every interactive control is a large, high-contrast target. */
+button, select, input { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible {
+  outline: 4px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-2xl font-bold select-none border-4 border-transparent;
+  min-height: 72px;
+  padding: 0 1.25rem;
+  font-size: 1.35rem;
+  transition: transform 80ms;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { @apply bg-blue-700 text-white; }
+.btn-secondary { @apply bg-white text-gray-900 border-gray-300; }
+.btn-danger { @apply bg-red-700 text-white; }
+.btn-success { @apply bg-green-700 text-white; }
+.btn-ghost { @apply bg-transparent text-blue-800 underline; min-height: 56px; }
+
+.tile {
+  @apply flex flex-col items-center justify-center rounded-3xl bg-white border-4 border-gray-300 select-none;
+  aspect-ratio: 1 / 1;
+  transition: transform 80ms, border-color 80ms;
+}
+.tile:active { transform: scale(0.94); border-color: #1d4ed8; }
+.tile-emoji { line-height: 1; }
+.tile-label { @apply font-bold text-center leading-tight px-1; }
+
+.tiles-large { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.tiles-large .tile-emoji { font-size: 5rem; }
+.tiles-large .tile-label { font-size: 1.5rem; }
+.tiles-medium { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.tiles-medium .tile-emoji { font-size: 3.75rem; }
+.tiles-medium .tile-label { font-size: 1.25rem; }
+.tiles-small { grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); }
+.tiles-small .tile-emoji { font-size: 2.75rem; }
+.tiles-small .tile-label { font-size: 1rem; }
+
+@media (max-width: 520px) {
+  .tiles-large { grid-template-columns: repeat(2, 1fr); }
+  .tiles-large .tile-emoji { font-size: 4rem; }
+  .tiles-medium { grid-template-columns: repeat(3, 1fr); }
+  .tiles-medium .tile-emoji { font-size: 2.75rem; }
+  .tiles-medium .tile-label { font-size: 1rem; }
+  .tiles-small { grid-template-columns: repeat(4, 1fr); }
+  .tiles-small .tile-emoji { font-size: 2rem; }
+  .tiles-small .tile-label { font-size: 0.85rem; }
+}
+
+.field { @apply w-full rounded-xl border-2 border-gray-300 bg-white px-3 py-3 text-lg; min-height: 56px; }
+.card { @apply rounded-2xl bg-white border-2 border-gray-200 p-4; }
