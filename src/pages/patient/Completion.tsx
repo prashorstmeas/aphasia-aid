@@ -68,11 +68,11 @@ export default function Completion() {
         const [before, after] = s.text.split(GAP)
         return (
           <>
-            <div className="card flex w-full flex-col items-center gap-4 py-8">
-              <span className="text-8xl leading-none" aria-hidden="true">{s.emoji}</span>
+            <div className="prompt-card">
+              <span className="text-8xl leading-none" style={{ filter: 'drop-shadow(0 6px 10px rgba(60,45,25,0.16))' }} aria-hidden="true">{s.emoji}</span>
               <p className="text-4xl font-bold leading-snug">
                 {before}
-                <span className={`mx-1 inline-block min-w-[4ch] border-b-8 px-2 ${picked == null ? 'border-gray-400' : correct ? 'border-green-700 text-green-800' : 'border-red-700 text-red-800'}`}>
+                <span className={`blank ${picked == null ? '' : correct ? 'blank-yes' : 'blank-no'}`}>
                   {picked ?? ' '}
                 </span>
                 {after}
@@ -92,10 +92,10 @@ export default function Completion() {
               </div>
             ) : (
               <div className="flex w-full flex-col gap-3">
-                <p className="text-3xl font-bold">{correct ? '✅ That’s right!' : '🤔 Not quite.'}</p>
+                <p className={`verdict ${correct ? 'verdict-yes' : 'verdict-no'}`}>{correct ? '✅ That’s right!' : '🤔 Not quite.'}</p>
                 {!correct && (
                   <>
-                    <p className="text-2xl text-gray-700">The word is <strong>{s.answer}</strong>.</p>
+                    <p className="text-2xl" style={{ color: 'var(--ink-muted)' }}>The word is <strong style={{ color: 'var(--ink)' }}>{s.answer}</strong>.</p>
                     <button type="button" className="btn btn-secondary" onClick={() => say(fillGap(s))}>🔊 Hear the whole sentence</button>
                   </>
                 )}

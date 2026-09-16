@@ -154,7 +154,7 @@ export default function Companion() {
   // ---- Render ----
   if (serverOk === false) {
     return (
-      <div className="mx-auto max-w-2xl rounded-2xl bg-amber-50 p-6 text-xl text-amber-900">
+      <div className="card mx-auto max-w-2xl p-6 text-xl" style={{ background: 'var(--accent-tint)', borderColor: '#f2d4c2', color: '#7a3310' }}>
         <p className="mb-2 text-2xl font-bold">The companion is not available right now.</p>
         <p>The companion server is not running or has no API key. A helper can start it with <code className="rounded bg-white px-2">npm run server</code> and set <code className="rounded bg-white px-2">ANTHROPIC_API_KEY</code> in <code className="rounded bg-white px-2">.env</code>.</p>
       </div>
@@ -173,9 +173,13 @@ export default function Companion() {
         <h2 className="mt-2 text-2xl font-bold">Or practise a real situation</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {companion.scenarios.map((s) => (
-            <button key={s.name} type="button" className="card flex items-center gap-4 border-4 text-left hover:border-blue-700" onClick={() => start({ mode: 'scenario', scenario: s })}>
-              <span className="text-5xl" aria-hidden="true">{s.emoji}</span>
-              <span><span className="block text-2xl font-bold">{s.name}</span><span className="block text-lg text-gray-600">{s.goal}</span></span>
+            <button key={s.name} type="button" className="card card-choice text-left" data-cat={6} onClick={() => start({ mode: 'scenario', scenario: s })}>
+              <span
+                className="grid shrink-0 place-items-center rounded-2xl text-4xl"
+                style={{ background: 'var(--cat-tint)', border: '1px solid var(--cat-edge)', width: '4.5rem', height: '4.5rem' }}
+                aria-hidden="true"
+              >{s.emoji}</span>
+              <span><span className="block text-2xl font-bold" style={{ color: 'var(--cat-ink)' }}>{s.name}</span><span className="block text-lg text-[var(--ink-muted)]">{s.goal}</span></span>
             </button>
           ))}
         </div>
@@ -190,34 +194,34 @@ export default function Companion() {
     <div className="mx-auto flex max-w-5xl flex-col gap-3 lg:flex-row">
       <div className="flex flex-1 flex-col gap-3">
         <div className="flex items-center justify-between">
-          <span className="text-xl text-gray-600">{session?.mode === 'scenario' ? '🎭' : '💬'} {title}</span>
+          <span className="text-xl text-[var(--ink-muted)]">{session?.mode === 'scenario' ? '🎭' : '💬'} {title}</span>
           <button type="button" className="btn btn-ghost" onClick={finish}>Finish</button>
         </div>
 
         {painPrompt && (
-          <div className="card flex flex-wrap items-center gap-3 border-4 border-red-300 bg-red-50">
+          <div className="card card-raised flex flex-wrap items-center gap-3" style={{ background: 'var(--danger-tint)', borderColor: '#f0cdd3', borderWidth: 2 }}>
             <span className="text-2xl font-bold">You look uncomfortable. Are you in pain?</span>
             <button type="button" className="btn btn-danger" onClick={() => { setPainPrompt(false); say('I am in pain.'); send('I am in pain', 'tile') }}>Yes, I'm in pain</button>
             <button type="button" className="btn btn-secondary" onClick={() => { setPainPrompt(false); send("No, I'm okay", 'tile') }}>No, I'm okay</button>
           </div>
         )}
 
-        <div className="card min-h-[160px] border-4 border-blue-700" aria-live="polite">
-          {busy && !last ? <p className="text-3xl text-gray-500">Thinking…</p> : (
+        <div className="card card-raised min-h-[160px]" style={{ borderColor: 'var(--primary)', borderWidth: 2, background: 'linear-gradient(180deg, var(--surface) 0%, var(--primary-tint) 160%)' }} aria-live="polite">
+          {busy && !last ? <p className="text-3xl text-[var(--ink-muted)]">Thinking…</p> : (
             <>
               <p className="text-4xl font-bold leading-snug">{last?.text ?? '…'}</p>
-              {busy && <p className="mt-2 text-xl text-gray-500">Thinking…</p>}
+              {busy && <p className="mt-2 text-xl text-[var(--ink-muted)]">Thinking…</p>}
             </>
           )}
           <button type="button" className="btn btn-ghost mt-2" disabled={!last} onClick={() => last && say(last.text)}>🔊 Say it again</button>
         </div>
 
-        {error && <p className="rounded-xl bg-red-50 p-3 text-lg text-red-800">{error}</p>}
+        {error && <p className="verdict verdict-no !text-lg">{error}</p>}
 
         {vision && (
-          <div className="card border-4 border-amber-300 bg-amber-50">
-            <p className="mb-2 text-lg text-gray-700">I see: {vision.description}</p>
-            {vision.concern && <p className="mb-2 font-bold text-red-800">{vision.concern}</p>}
+          <div className="card" style={{ background: 'var(--accent-tint)', borderColor: '#f2d4c2', borderWidth: 2 }}>
+            <p className="mb-2 text-lg text-[var(--ink-muted)]">I see: {vision.description}</p>
+            {vision.concern && <p className="mb-2 font-bold text-[var(--danger)]">{vision.concern}</p>}
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {vision.intents.map((i) => (
                 <button key={i.phrase} type="button" className="tile" onClick={() => { say(i.phrase); send(i.phrase, 'vision') }}>
@@ -231,7 +235,7 @@ export default function Companion() {
         {suggestions.length > 0 && !busy && (
           <div className="flex flex-wrap gap-2">
             {suggestions.map((w) => (
-              <button key={w} type="button" className="btn btn-secondary border-blue-300 bg-blue-50 text-2xl" onClick={() => { say(w); send(w, 'tile') }}>{w}</button>
+              <button key={w} type="button" className="btn btn-secondary border-[var(--primary)] bg-[var(--primary-tint)] text-2xl" onClick={() => { say(w); send(w, 'tile') }}>{w}</button>
             ))}
           </div>
         )}
@@ -243,14 +247,14 @@ export default function Companion() {
             ) : (
               <button type="button" className="btn btn-primary col-span-2 min-h-[96px] text-3xl" disabled={busy} onClick={listen}>🎤 Talk</button>
             )
-          ) : <p className="col-span-2 rounded-xl bg-amber-50 p-3 text-amber-900">This browser can't hear you — use the buttons below.</p>}
+          ) : <p className="card col-span-2" style={{ background: 'var(--accent-tint)', borderColor: '#f2d4c2', color: '#7a3310' }}>This browser can't hear you — use the buttons below.</p>}
           {QUICK.map((q) => (
             <button key={q.label} type="button" className="btn btn-secondary text-2xl" disabled={busy} onClick={() => { say(q.text); send(q.text, 'tile') }}>{q.emoji} {q.label}</button>
           ))}
         </div>
-        {speakingHint && listening && <p className="text-center text-lg text-gray-600">I noticed you're speaking — I'm listening.</p>}
+        {speakingHint && listening && <p className="text-center text-lg text-[var(--ink-muted)]">I noticed you're speaking — I'm listening.</p>}
 
-        <details className="text-gray-600">
+        <details className="text-[var(--ink-muted)]">
           <summary className="cursor-pointer text-lg">Everything we said</summary>
           <ul className="mt-2 space-y-1 text-lg">
             {turns.map((t, i) => <li key={i}><strong>{t.role === 'user' ? 'You' : 'Companion'}:</strong> {t.text}</li>)}
@@ -260,16 +264,16 @@ export default function Companion() {
 
       {cameraSupported && companion.cameraEnabled && (
         <aside className="flex w-full flex-col gap-2 lg:w-72">
-          <div className="relative overflow-hidden rounded-2xl border-4 border-gray-300 bg-black" style={{ aspectRatio: '4 / 3' }}>
+          <div className="relative overflow-hidden bg-black" style={{ aspectRatio: '4 / 3', borderRadius: 'var(--radius-lg)', border: '1px solid var(--hairline-strong)', boxShadow: 'var(--lift-2)' }}>
             <video ref={videoRef} className="h-full w-full object-cover" style={{ transform: 'scaleX(-1)' }} muted playsInline />
             {!cameraOn && <div className="absolute inset-0 flex items-center justify-center text-6xl text-white/60">📷</div>}
-            {gestureChip && <span className="absolute left-2 top-2 rounded-xl bg-blue-700 px-3 py-1 text-xl font-bold text-white">{gestureChip}</span>}
+            {gestureChip && <span className="absolute left-2 top-2 rounded-xl px-3 py-1 text-xl font-bold text-white" style={{ background: 'var(--primary)', boxShadow: 'var(--lift-2)' }}>{gestureChip}</span>}
             {cameraOn && companion.moodCues && MOOD_LABEL[mood] && <span className="absolute bottom-2 left-2 rounded-xl bg-white/90 px-3 py-1 text-lg font-semibold">{MOOD_LABEL[mood]}</span>}
           </div>
           <button type="button" className={`btn ${cameraOn ? 'btn-secondary' : 'btn-primary'}`} onClick={toggleCamera}>{cameraOn ? '📷 Camera off' : '📷 Camera on'}</button>
           <button type="button" className="btn btn-secondary" disabled={!cameraOn || looking || busy} onClick={look}>{looking ? 'Looking…' : '👀 Look at what I show'}</button>
-          {cameraStatus && <p className="text-sm text-gray-600">{cameraStatus}</p>}
-          {cameraOn && <p className="text-sm text-gray-600">👍 yes · 👎 no · ✋ stop/help · nod/shake head. Video stays on this device; only a photo is sent when you press “Look”.</p>}
+          {cameraStatus && <p className="text-sm text-[var(--ink-muted)]">{cameraStatus}</p>}
+          {cameraOn && <p className="text-sm text-[var(--ink-muted)]">👍 yes · 👎 no · ✋ stop/help · nod/shake head. Video stays on this device; only a photo is sent when you press “Look”.</p>}
         </aside>
       )}
     </div>

@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="#1d4ed8"/><path d="M128 160h256a32 32 0 0 1 32 32v128a32 32 0 0 1-32 32H240l-80 64v-64h-32a32 32 0 0 1-32-32V192a32 32 0 0 1 32-32z" fill="#fff"/><circle cx="192" cy="256" r="20" fill="#1d4ed8"/><circle cx="256" cy="256" r="20" fill="#1d4ed8"/><circle cx="320" cy="256" r="20" fill="#1d4ed8"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14808a"/>
+      <stop offset="1" stop-color="#0a545b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#g)"/>
+  <path d="M128 152h256a40 40 0 0 1 40 40v136a40 40 0 0 1-40 40H246l-78 62a8 8 0 0 1-13-6v-56h-27a40 40 0 0 1-40-40V192a40 40 0 0 1 40-40z" fill="#faf7f2"/>
+  <circle cx="192" cy="260" r="22" fill="#0d6a72"/>
+  <circle cx="256" cy="260" r="22" fill="#b5491b"/>
+  <circle cx="320" cy="260" r="22" fill="#0d6a72"/>
+</svg>

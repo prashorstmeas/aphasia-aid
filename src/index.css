@@ -1,76 +1,405 @@
 @import "tailwindcss";
 
+/*
+  Design notes for this app specifically:
+  the users are adults, usually after a stroke. The look should read as calm and
+  grown-up, never childish, and every colour pair here clears WCAG AA (4.5:1) so
+  nothing depends on good eyesight or good lighting. Colour is always a second
+  signal — never the only one — because a lot of these users also have visual
+  field loss, and some have colour vision deficiency.
+*/
+
 :root {
   font-size: 18px;
   color-scheme: light;
-  --surface-1: #fcfcfb;
-  --text-primary: #0b0b0b;
-  --text-secondary: #52514e;
-  --series-1: #2a78d6;
+
+  /* Surfaces: warm paper rather than clinical grey-blue. */
+  --paper: #faf7f2;
+  --paper-deep: #f2ece3;
+  --surface: #ffffff;
+  --surface-sunk: #f7f4ef;
+  --hairline: #e4ddd2;
+  --hairline-strong: #cfc5b6;
+
+  /* Ink */
+  --ink: #1c1917;
+  --ink-muted: #57534e;
+
+  /* Brand + semantics */
+  --primary: #0d6a72;
+  --primary-deep: #0a545b;
+  --primary-tint: #e7f4f4;
+  --accent: #b5491b;
+  --accent-tint: #fdefe7;
+  --success: #2b6e3f;
+  --success-tint: #eaf5ec;
+  --danger: #a8332a;
+  --danger-tint: #fdeef0;
+  --focus: #b5491b;
+
+  /* Charts read from these. */
+  --series-1: #0d6a72;
+  --text-secondary: var(--ink-muted);
+
+  /* Soft, layered elevation — one light source, low and warm. */
+  --lift-1: 0 1px 2px rgba(60, 45, 25, 0.06), 0 2px 6px rgba(60, 45, 25, 0.05);
+  --lift-2: 0 1px 2px rgba(60, 45, 25, 0.07), 0 6px 16px rgba(60, 45, 25, 0.08);
+  --lift-3: 0 2px 4px rgba(60, 45, 25, 0.08), 0 14px 34px rgba(60, 45, 25, 0.12);
+
+  --radius: 1rem;
+  --radius-lg: 1.35rem;
 }
 
 html, body, #root { height: 100%; }
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: #f4f4f2;
-  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI",
+    system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  color: var(--ink);
+  background: var(--paper);
+  /* A very slight warmth at the edges keeps large empty areas from going flat. */
+  background-image:
+    radial-gradient(1200px 600px at 12% -10%, #ffffff 0%, transparent 60%),
+    radial-gradient(900px 500px at 105% 105%, var(--paper-deep) 0%, transparent 55%);
+  background-attachment: fixed;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   overscroll-behavior: none;
 }
 
-/* Every interactive control is a large, high-contrast target. */
-button, select, input { font: inherit; }
+h1, h2, h3 { letter-spacing: -0.015em; }
+
+button, select, input, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
-button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible {
-  outline: 4px solid #f59e0b;
-  outline-offset: 2px;
+
+button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible, [role="tab"]:focus-visible {
+  outline: 4px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 0.5rem;
 }
+
+/* ---------- Buttons ---------- */
 
 .btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-2xl font-bold select-none border-4 border-transparent;
+  @apply inline-flex items-center justify-center gap-2 select-none font-bold;
   min-height: 72px;
-  padding: 0 1.25rem;
+  padding: 0 1.35rem;
   font-size: 1.35rem;
-  transition: transform 80ms;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  box-shadow: var(--lift-1);
+  transition: transform 90ms ease, box-shadow 140ms ease, background-color 140ms ease, border-color 140ms ease;
 }
-.btn:active { transform: scale(0.96); }
-.btn-primary { @apply bg-blue-700 text-white; }
-.btn-secondary { @apply bg-white text-gray-900 border-gray-300; }
-.btn-danger { @apply bg-red-700 text-white; }
-.btn-success { @apply bg-green-700 text-white; }
-.btn-ghost { @apply bg-transparent text-blue-800 underline; min-height: 56px; }
+.btn:active:not(:disabled) { transform: translateY(1px) scale(0.985); box-shadow: var(--lift-1); }
+.btn:disabled { opacity: 0.42; box-shadow: none; cursor: not-allowed; }
+
+.btn-primary {
+  background: linear-gradient(180deg, #14808a 0%, var(--primary) 100%);
+  color: #fff;
+  border-color: var(--primary-deep);
+  box-shadow: var(--lift-2);
+}
+.btn-primary:hover:not(:disabled) { background: linear-gradient(180deg, #169099 0%, #0e737c 100%); }
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--hairline-strong);
+}
+.btn-secondary:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-tint); }
+
+.btn-success {
+  background: linear-gradient(180deg, #34814a 0%, var(--success) 100%);
+  color: #fff; border-color: #245c34; box-shadow: var(--lift-2);
+}
+.btn-danger {
+  background: linear-gradient(180deg, #bc3b30 0%, var(--danger) 100%);
+  color: #fff; border-color: #8d2a22; box-shadow: var(--lift-2);
+}
+.btn-accent {
+  background: linear-gradient(180deg, #ca5420 0%, var(--accent) 100%);
+  color: #fff; border-color: #973c16; box-shadow: var(--lift-2);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--primary-deep);
+  border-color: transparent;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  min-height: 56px;
+}
+.btn-ghost:hover { background: var(--primary-tint); text-decoration: none; }
+
+/* ---------- Tiles ----------
+   A board sets --cat-* on the grid; tiles inherit it, so each category reads as
+   its own colour family the way a printed AAC board does. */
 
 .tile {
-  @apply flex flex-col items-center justify-center rounded-3xl bg-white border-4 border-gray-300 select-none;
+  @apply flex flex-col items-stretch justify-end select-none overflow-hidden;
   aspect-ratio: 1 / 1;
-  transition: transform 80ms, border-color 80ms;
+  background: var(--cat-tint, var(--surface));
+  border: 1px solid var(--cat-edge, var(--hairline-strong));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--lift-1);
+  transition: transform 90ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
-.tile:active { transform: scale(0.94); border-color: #1d4ed8; }
-.tile-emoji { line-height: 1; }
-.tile-label { @apply font-bold text-center leading-tight px-1; }
+.tile:hover { box-shadow: var(--lift-2); border-color: var(--cat-ink, var(--primary)); }
+.tile:active { transform: translateY(2px) scale(0.97); box-shadow: var(--lift-1); }
+
+.tile-emoji {
+  @apply flex flex-1 items-center justify-center;
+  line-height: 1;
+  /* Emoji are flat art; a whisper of shadow stops them floating on the tint. */
+  filter: drop-shadow(0 2px 3px rgba(60, 45, 25, 0.16));
+}
+.tile-label {
+  @apply text-center font-bold leading-tight;
+  color: var(--cat-ink, var(--ink));
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  border-top: 1px solid var(--cat-edge, var(--hairline));
+  padding: 0.5rem 0.4rem;
+}
+.tile-selected { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-tint), var(--lift-2); }
 
 .tiles-large { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
-.tiles-large .tile-emoji { font-size: 5rem; }
-.tiles-large .tile-label { font-size: 1.5rem; }
+.tiles-large .tile-emoji { font-size: 4.5rem; }
+.tiles-large .tile-label { font-size: 1.4rem; }
 .tiles-medium { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-.tiles-medium .tile-emoji { font-size: 3.75rem; }
-.tiles-medium .tile-label { font-size: 1.25rem; }
+.tiles-medium .tile-emoji { font-size: 3.4rem; }
+.tiles-medium .tile-label { font-size: 1.15rem; }
 .tiles-small { grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); }
-.tiles-small .tile-emoji { font-size: 2.75rem; }
-.tiles-small .tile-label { font-size: 1rem; }
+.tiles-small .tile-emoji { font-size: 2.5rem; }
+.tiles-small .tile-label { font-size: 0.95rem; }
 
 @media (max-width: 520px) {
   .tiles-large { grid-template-columns: repeat(2, 1fr); }
-  .tiles-large .tile-emoji { font-size: 4rem; }
+  .tiles-large .tile-emoji { font-size: 3.5rem; }
   .tiles-medium { grid-template-columns: repeat(3, 1fr); }
-  .tiles-medium .tile-emoji { font-size: 2.75rem; }
-  .tiles-medium .tile-label { font-size: 1rem; }
+  .tiles-medium .tile-emoji { font-size: 2.5rem; }
+  .tiles-medium .tile-label { font-size: 0.95rem; }
   .tiles-small { grid-template-columns: repeat(4, 1fr); }
-  .tiles-small .tile-emoji { font-size: 2rem; }
-  .tiles-small .tile-label { font-size: 0.85rem; }
+  .tiles-small .tile-emoji { font-size: 1.9rem; }
+  .tiles-small .tile-label { font-size: 0.8rem; }
 }
 
-.field { @apply w-full rounded-xl border-2 border-gray-300 bg-white px-3 py-3 text-lg; min-height: 56px; }
-.card { @apply rounded-2xl bg-white border-2 border-gray-200 p-4; }
+/* Category families. Set data-cat="0..7" on a container. */
+[data-cat="0"] { --cat-tint: #eef2f6; --cat-ink: #33485c; --cat-edge: #cbd7e3; }
+[data-cat="1"] { --cat-tint: #fdeef0; --cat-ink: #8f3243; --cat-edge: #f0cdd3; }
+[data-cat="2"] { --cat-tint: #fdf3e3; --cat-ink: #7a4a12; --cat-edge: #eddcbd; }
+[data-cat="3"] { --cat-tint: #eaf5ec; --cat-ink: #2b6e3f; --cat-edge: #c8e3ce; }
+[data-cat="4"] { --cat-tint: #f2eefb; --cat-ink: #563b93; --cat-edge: #d9cff1; }
+[data-cat="5"] { --cat-tint: #e7f4f4; --cat-ink: #0a545b; --cat-edge: #c2e0e1; }
+[data-cat="6"] { --cat-tint: #fdefe7; --cat-ink: #8d3d16; --cat-edge: #f2d4c2; }
+[data-cat="7"] { --cat-tint: #eaf1fc; --cat-ink: #1d4785; --cat-edge: #cbdcf5; }
+
+/* A category tab in its own colour, filled when it is the open board. */
+.cat-tab {
+  @apply inline-flex shrink-0 items-center gap-2 font-bold select-none;
+  min-height: 64px;
+  padding: 0 1.15rem;
+  font-size: 1.2rem;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--cat-ink, var(--ink));
+  border: 2px solid var(--cat-edge, var(--hairline-strong));
+  box-shadow: var(--lift-1);
+  transition: transform 90ms ease, box-shadow 140ms ease, background-color 140ms ease;
+}
+.cat-tab:hover { background: var(--cat-tint, var(--surface)); }
+.cat-tab:active { transform: translateY(1px); }
+.cat-tab[aria-selected="true"] {
+  background: var(--cat-ink, var(--primary));
+  border-color: var(--cat-ink, var(--primary));
+  color: #fff;
+  box-shadow: var(--lift-2);
+}
+
+/* ---------- Surfaces ---------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--lift-1);
+  padding: 1rem;
+}
+.card-raised { box-shadow: var(--lift-2); }
+
+/* A card that is also a link/choice, e.g. the practice menu. */
+.card-choice {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transition: transform 110ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+.card-choice:hover { border-color: var(--primary); box-shadow: var(--lift-3); transform: translateY(-2px); }
+.card-choice:active { transform: translateY(0); box-shadow: var(--lift-1); }
+
+.field {
+  @apply w-full;
+  min-height: 56px;
+  padding: 0.7rem 0.85rem;
+  font-size: 1.05rem;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--hairline-strong);
+  border-radius: 0.75rem;
+  box-shadow: inset 0 1px 2px rgba(60, 45, 25, 0.05);
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+.field:hover { border-color: var(--hairline-strong); }
+.field:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-tint); }
+
+.chip {
+  @apply inline-flex items-center gap-1 font-semibold;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  background: var(--surface-sunk);
+  color: var(--ink-muted);
+  border: 1px solid var(--hairline);
+}
+.chip-success { background: var(--success-tint); color: var(--success); border-color: #c8e3ce; }
+.chip-danger { background: var(--danger-tint); color: var(--danger); border-color: #f0cdd3; }
+.chip-accent { background: var(--accent-tint); color: var(--accent); border-color: #f2d4c2; }
+
+/* ---------- App chrome ---------- */
+
+.app-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--hairline);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, var(--lift-1);
+}
+@media (min-width: 640px) { .app-bar { padding: 0.7rem 1rem; } }
+
+.wordmark {
+  @apply hidden items-center gap-2 font-bold sm:inline-flex;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  color: var(--primary-deep);
+  padding-right: 0.5rem;
+  white-space: nowrap;
+}
+.wordmark-dot {
+  width: 1.9rem; height: 1.9rem;
+  display: grid; place-items: center;
+  border-radius: 0.65rem;
+  background: linear-gradient(180deg, #14808a 0%, var(--primary) 100%);
+  box-shadow: var(--lift-1);
+  font-size: 1rem;
+}
+
+/* Therapist section tabs. */
+.tab {
+  @apply inline-flex items-center font-bold;
+  min-height: 52px;
+  padding: 0 1rem;
+  font-size: 1rem;
+  border-radius: 0.8rem;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--hairline-strong);
+  box-shadow: var(--lift-1);
+  transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+.tab:hover { border-color: var(--primary); color: var(--primary-deep); background: var(--primary-tint); }
+.tab-active {
+  background: linear-gradient(180deg, #14808a 0%, var(--primary) 100%);
+  border-color: var(--primary-deep);
+  color: #fff;
+  box-shadow: var(--lift-2);
+}
+.tab-active:hover { color: #fff; background: linear-gradient(180deg, #169099 0%, #0e737c 100%); }
+
+/* ---------- Exercise bits ---------- */
+
+.progress-track {
+  height: 10px;
+  width: 100%;
+  border-radius: 999px;
+  background: var(--paper-deep);
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(60, 45, 25, 0.08);
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #14808a 0%, var(--primary) 100%);
+  transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The big prompt card an exercise is built around. */
+.prompt-card {
+  @apply flex w-full flex-col items-center;
+  gap: 1rem;
+  padding: 2rem 1.25rem;
+  background:
+    linear-gradient(180deg, var(--surface) 0%, var(--surface-sunk) 100%);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--lift-2);
+}
+
+/* Result banners. Colour is backed by an icon and words, never used alone. */
+.verdict {
+  @apply flex items-center justify-center gap-3 font-bold;
+  padding: 1rem 1.25rem;
+  font-size: 1.6rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+}
+.verdict-yes { background: var(--success-tint); color: var(--success); border-color: #c8e3ce; }
+.verdict-no { background: var(--accent-tint); color: var(--accent); border-color: #f2d4c2; }
+
+/* The blank in a sentence-completion prompt. */
+.blank {
+  display: inline-block;
+  min-width: 5ch;
+  margin: 0 0.25rem;
+  padding: 0 0.4rem;
+  border-bottom: 6px solid var(--hairline-strong);
+  transition: border-color 160ms ease, color 160ms ease;
+}
+.blank-yes { border-color: var(--success); color: var(--success); }
+.blank-no { border-color: var(--danger); color: var(--danger); }
+
+/* ---------- Tables ---------- */
+
+.data-table { @apply w-full text-left; border-collapse: collapse; }
+.data-table thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  font-weight: 700;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--hairline-strong);
+  white-space: nowrap;
+}
+.data-table tbody td { padding: 0.65rem 0.6rem; border-bottom: 1px solid var(--hairline); }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover { background: var(--surface-sunk); }
+
+.meter { @apply inline-block overflow-hidden align-middle; height: 8px; width: 6rem; border-radius: 999px; background: var(--paper-deep); }
+.meter > span { @apply block h-full; border-radius: 999px; background: var(--series-1); }
+
+/* ---------- Motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

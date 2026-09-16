@@ -16,8 +16,8 @@ function WordForm({ initial, onSubmit, onCancel, submitLabel }: { initial: Omit<
       </select>
       <input className="field col-span-3" placeholder='Hint read aloud, e.g. "You drink from it. It starts with k."' value={w.hint ?? ''} onChange={(e) => setW({ ...w, hint: e.target.value })} aria-label="Hint" />
       <div className="flex gap-1">
-        <button type="button" className="flex-1 rounded-lg bg-blue-700 px-3 py-3 font-bold text-white disabled:opacity-40" disabled={!w.text.trim()} onClick={() => onSubmit({ ...w, text: w.text.trim(), emoji: w.emoji.trim() || '🔹', category: w.category.trim() || 'General', hint: w.hint?.trim() || undefined })}>{submitLabel}</button>
-        {onCancel && <button type="button" className="rounded-lg border-2 border-gray-300 px-3 py-3" onClick={onCancel}>✕</button>}
+        <button type="button" className="flex-1 rounded-lg bg-[var(--primary)] px-3 py-3 font-bold text-white disabled:opacity-40" disabled={!w.text.trim()} onClick={() => onSubmit({ ...w, text: w.text.trim(), emoji: w.emoji.trim() || '🔹', category: w.category.trim() || 'General', hint: w.hint?.trim() || undefined })}>{submitLabel}</button>
+        {onCancel && <button type="button" className="rounded-lg border-2 border-[var(--hairline-strong)] px-3 py-3" onClick={onCancel}>✕</button>}
       </div>
     </div>
   )
@@ -45,7 +45,7 @@ export default function Words() {
             {categories.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
-        <ul className="divide-y divide-gray-200">
+        <ul className="divide-y divide-[var(--hairline)]">
           {shown.map((w) => (
             <li key={w.id} className="py-2">
               {editing === w.id ? (
@@ -54,12 +54,12 @@ export default function Words() {
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="text-3xl" aria-hidden="true">{w.emoji}</span>
                   <span className="text-lg font-semibold">{w.text}</span>
-                  <span className="rounded bg-gray-100 px-2 text-sm">{w.category}</span>
-                  <span className="rounded bg-gray-100 px-2 text-sm">{['', 'Easy', 'Medium', 'Hard'][w.difficulty]}</span>
-                  {w.hint && <span className="text-sm text-gray-600">“{w.hint}”</span>}
+                  <span className="rounded bg-[var(--surface-sunk)] px-2 text-sm">{w.category}</span>
+                  <span className="rounded bg-[var(--surface-sunk)] px-2 text-sm">{['', 'Easy', 'Medium', 'Hard'][w.difficulty]}</span>
+                  {w.hint && <span className="text-sm text-[var(--ink-muted)]">“{w.hint}”</span>}
                   <span className="ml-auto flex gap-1">
-                    <button type="button" className="rounded-lg border-2 border-gray-300 px-3 py-2" onClick={() => setEditing(w.id!)}>Edit</button>
-                    <button type="button" className="rounded-lg border-2 border-red-300 px-3 py-2 text-red-700" onClick={() => confirm(`Delete "${w.text}"?`) && db.words.delete(w.id!)} aria-label="Delete">🗑️</button>
+                    <button type="button" className="rounded-lg border-2 border-[var(--hairline-strong)] px-3 py-2" onClick={() => setEditing(w.id!)}>Edit</button>
+                    <button type="button" className="rounded-lg border-2 border-[#f0cdd3] px-3 py-2 text-[var(--danger)]" onClick={() => confirm(`Delete "${w.text}"?`) && db.words.delete(w.id!)} aria-label="Delete">🗑️</button>
                   </span>
                 </div>
               )}

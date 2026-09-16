@@ -86,22 +86,40 @@ export function useRound<T>(all: T[] | undefined, type: ExerciseType, meta: (ite
   return { item: queue?.[idx], idx, total: queue?.length ?? 0, score, finished, roundId, answer, restart, items: queue }
 }
 
-/** Back link and "3 / 8" progress, shared by every exercise. */
+/** Back link, title and a progress bar, shared by every exercise. */
 export function RoundHeader({ type, idx, total }: { type: ExerciseType; idx: number; total: number }) {
   return (
-    <div className="flex w-full items-center justify-between">
-      <Link to="/practice" className="btn btn-ghost">← Back</Link>
-      <span className="text-xl text-gray-600">{EXERCISE_LABELS[type]} · {idx + 1} / {total}</span>
+    <div className="flex w-full flex-col gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <Link to="/practice" className="btn btn-ghost">← Back</Link>
+        <span className="text-lg font-semibold" style={{ color: 'var(--ink-muted)' }}>
+          {EXERCISE_LABELS[type]} · {idx + 1} of {total}
+        </span>
+      </div>
+      <div
+        className="progress-track"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuenow={idx}
+        aria-label={`Question ${idx + 1} of ${total}`}
+      >
+        <div className="progress-fill" style={{ width: `${(idx / total) * 100}%` }} />
+      </div>
     </div>
   )
 }
 
 export function RoundDone({ score, total, onAgain }: { score: number; total: number; onAgain: () => void }) {
+  // Encouraging, not graded: everyone gets a warm close, the number is just the number.
+  const strong = score >= Math.ceil(total * 0.75)
   return (
-    <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
-      <span className="text-8xl" aria-hidden="true">🎉</span>
-      <h1 className="text-4xl font-bold">Well done!</h1>
-      <p className="text-3xl">You got <strong>{score}</strong> out of <strong>{total}</strong>.</p>
+    <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 py-6 text-center">
+      <span className="text-8xl" aria-hidden="true">{strong ? '🎉' : '👏'}</span>
+      <h1 className="text-4xl font-bold">{strong ? 'Well done!' : 'Good work.'}</h1>
+      <p className="verdict verdict-yes text-3xl">
+        You got <strong>{score}</strong> out of <strong>{total}</strong>.
+      </p>
       <div className="flex flex-wrap justify-center gap-3">
         <button type="button" className="btn btn-primary" onClick={onAgain}>🔁 Practise again</button>
         <Link to="/practice" className="btn btn-secondary">Done</Link>
@@ -120,12 +138,19 @@ export function RoundShell<T>({ round, type, emptyMessage, children }: {
   emptyMessage: string
   children: (item: T) => ReactNode
 }) {
-  if (!round.items) return <p className="p-6 text-2xl">Loading…</p>
-  if (round.items.length === 0) return <p className="p-6 text-2xl">{emptyMessage}</p>
+  if (!round.items) return <p className="p-6 text-2xl" style={{ color: 'var(--ink-muted)' }}>Loading…</p>
+  if (round.items.length === 0) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <p className="card text-2xl" style={{ color: 'var(--ink-muted)' }}>{emptyMessage}</p>
+        <Link to="/practice" className="btn btn-secondary mt-4">← Back to practice</Link>
+      </div>
+    )
+  }
   if (round.finished) return <RoundDone score={round.score} total={round.total} onAgain={round.restart} />
   if (!round.item) return null
   return (
-    <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
+    <div className="mx-auto flex max-w-2xl flex-col items-center gap-5 text-center">
       <RoundHeader type={type} idx={round.idx} total={round.total} />
       {children(round.item)}
     </div>

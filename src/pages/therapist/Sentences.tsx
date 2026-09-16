@@ -18,8 +18,8 @@ function DifficultySelect({ value, onChange }: { value: 1 | 2 | 3; onChange: (d:
 function FormButtons({ disabled, submitLabel, onSubmit, onCancel }: { disabled: boolean; submitLabel: string; onSubmit: () => void; onCancel?: () => void }) {
   return (
     <div className="flex gap-1">
-      <button type="button" className="flex-1 rounded-lg bg-blue-700 px-3 py-3 font-bold text-white disabled:opacity-40" disabled={disabled} onClick={onSubmit}>{submitLabel}</button>
-      {onCancel && <button type="button" className="rounded-lg border-2 border-gray-300 px-3 py-3" onClick={onCancel}>✕</button>}
+      <button type="button" className="flex-1 rounded-lg bg-[var(--primary)] px-3 py-3 font-bold text-white disabled:opacity-40" disabled={disabled} onClick={onSubmit}>{submitLabel}</button>
+      {onCancel && <button type="button" className="rounded-lg border-2 border-[var(--hairline-strong)] px-3 py-3" onClick={onCancel}>✕</button>}
     </div>
   )
 }
@@ -37,9 +37,9 @@ function SentenceForm({ initial, submitLabel, onSubmit, onCancel }: { initial: O
       <input className="field col-span-2 col-start-2" placeholder="Word that fills the gap" value={s.answer} onChange={(e) => setS({ ...s, answer: e.target.value })} aria-label="Answer" />
       <DifficultySelect value={s.difficulty} onChange={(d) => setS({ ...s, difficulty: d })} />
       <input className="field col-span-3 col-start-2" placeholder="Wrong choices, separated by commas (optional)" value={distractors} onChange={(e) => setDistractors(e.target.value)} aria-label="Wrong choices" />
-      <div className="col-span-3 col-start-2 text-sm text-gray-600">
+      <div className="col-span-3 col-start-2 text-sm text-[var(--ink-muted)]">
         {s.text && !hasGap
-          ? <span className="text-red-700">The sentence needs a gap written as <code>{GAP}</code>.</span>
+          ? <span className="text-[var(--danger)]">The sentence needs a gap written as <code>{GAP}</code>.</span>
           : <>Reads aloud as “{(s.text || `A sentence with a ${GAP}.`).replace(GAP, s.answer || '…')}”. Blank wrong choices are filled in from your other sentences.</>}
       </div>
       <div className="col-span-3 col-start-2">
@@ -94,7 +94,7 @@ export default function Sentences() {
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-4">
-      <p className="rounded-xl bg-blue-50 p-4 text-lg text-blue-900">
+      <p className="rounded-xl bg-[var(--primary-tint)] p-4 text-lg text-[var(--primary-deep)]">
         Sentences are used twice: <strong>Finish the sentence</strong> hides the gap word, and <strong>Read aloud</strong> shows the
         whole sentence for the patient to read.
       </p>
@@ -106,7 +106,7 @@ export default function Sentences() {
 
       <div className="card">
         <h2 className="mb-3 text-xl font-bold">Sentences ({sentences.length})</h2>
-        <ul className="divide-y divide-gray-200">
+        <ul className="divide-y divide-[var(--hairline)]">
           {[...sentences].sort(byDifficulty).map((s) => (
             <li key={s.id} className="py-2">
               {editingSentence === s.id ? (
@@ -117,11 +117,11 @@ export default function Sentences() {
                   <span className="text-lg">
                     {s.text.split(GAP)[0]}<strong className="underline">{s.answer}</strong>{s.text.split(GAP)[1]}
                   </span>
-                  <span className="rounded bg-gray-100 px-2 text-sm">{DIFFICULTIES[s.difficulty]}</span>
-                  {s.distractors.length > 0 && <span className="text-sm text-gray-600">vs {s.distractors.join(', ')}</span>}
+                  <span className="rounded bg-[var(--surface-sunk)] px-2 text-sm">{DIFFICULTIES[s.difficulty]}</span>
+                  {s.distractors.length > 0 && <span className="text-sm text-[var(--ink-muted)]">vs {s.distractors.join(', ')}</span>}
                   <span className="ml-auto flex gap-1">
-                    <button type="button" className="rounded-lg border-2 border-gray-300 px-3 py-2" onClick={() => setEditingSentence(s.id!)}>Edit</button>
-                    <button type="button" className="rounded-lg border-2 border-red-300 px-3 py-2 text-red-700" onClick={() => confirm('Delete this sentence?') && db.sentences.delete(s.id!)} aria-label="Delete">🗑️</button>
+                    <button type="button" className="rounded-lg border-2 border-[var(--hairline-strong)] px-3 py-2" onClick={() => setEditingSentence(s.id!)}>Edit</button>
+                    <button type="button" className="rounded-lg border-2 border-[#f0cdd3] px-3 py-2 text-[var(--danger)]" onClick={() => confirm('Delete this sentence?') && db.sentences.delete(s.id!)} aria-label="Delete">🗑️</button>
                   </span>
                 </div>
               )}
@@ -137,7 +137,7 @@ export default function Sentences() {
 
       <div className="card">
         <h2 className="mb-3 text-xl font-bold">Yes / no questions ({questions.length})</h2>
-        <ul className="divide-y divide-gray-200">
+        <ul className="divide-y divide-[var(--hairline)]">
           {[...questions].sort(byDifficulty).map((q) => (
             <li key={q.id} className="py-2">
               {editingQuestion === q.id ? (
@@ -146,11 +146,11 @@ export default function Sentences() {
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="text-3xl" aria-hidden="true">{q.emoji}</span>
                   <span className="text-lg">{q.text}</span>
-                  <span className={`rounded px-2 text-sm font-bold ${q.answer ? 'bg-green-100 text-green-900' : 'bg-red-100 text-red-900'}`}>{q.answer ? 'Yes' : 'No'}</span>
-                  <span className="rounded bg-gray-100 px-2 text-sm">{DIFFICULTIES[q.difficulty]}</span>
+                  <span className={`rounded px-2 text-sm font-bold ${q.answer ? 'bg-[var(--success-tint)] text-[var(--success)]' : 'bg-[var(--danger-tint)] text-[var(--danger)]'}`}>{q.answer ? 'Yes' : 'No'}</span>
+                  <span className="rounded bg-[var(--surface-sunk)] px-2 text-sm">{DIFFICULTIES[q.difficulty]}</span>
                   <span className="ml-auto flex gap-1">
-                    <button type="button" className="rounded-lg border-2 border-gray-300 px-3 py-2" onClick={() => setEditingQuestion(q.id!)}>Edit</button>
-                    <button type="button" className="rounded-lg border-2 border-red-300 px-3 py-2 text-red-700" onClick={() => confirm(`Delete "${q.text}"?`) && db.questions.delete(q.id!)} aria-label="Delete">🗑️</button>
+                    <button type="button" className="rounded-lg border-2 border-[var(--hairline-strong)] px-3 py-2" onClick={() => setEditingQuestion(q.id!)}>Edit</button>
+                    <button type="button" className="rounded-lg border-2 border-[#f0cdd3] px-3 py-2 text-[var(--danger)]" onClick={() => confirm(`Delete "${q.text}"?`) && db.questions.delete(q.id!)} aria-label="Delete">🗑️</button>
                   </span>
                 </div>
               )}

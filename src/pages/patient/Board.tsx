@@ -6,6 +6,9 @@ import { useBoards, useSettings, useTiles } from '../../hooks'
 import type { Tile as TileRow } from '../../db'
 import { speak } from '../../speech'
 
+/** Boards are colour-coded by position, the way a printed AAC board is. */
+const CATEGORY_COLOURS = 8
+
 export default function Board() {
   const { boardId } = useParams()
   const navigate = useNavigate()
@@ -14,6 +17,7 @@ export default function Board() {
   const [sentence, setSentence] = useState<TileRow[]>([])
 
   const activeId = boardId ? Number(boardId) : boards[0]?.id
+  const activeIndex = Math.max(0, boards.findIndex((b) => b.id === activeId))
   const tiles = useTiles(activeId)
 
   // If the selected board was deleted, fall back to the first one.
@@ -39,26 +43,29 @@ export default function Board() {
         onClear={() => setSentence([])}
       />
 
-      <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Categories">
-        {boards.map((b) => (
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2 pt-1" role="tablist" aria-label="Categories">
+        {boards.map((b, i) => (
           <button
             key={b.id}
             type="button"
             role="tab"
+            data-cat={i % CATEGORY_COLOURS}
             aria-selected={b.id === activeId}
-            className={`btn shrink-0 ${b.id === activeId ? 'btn-primary' : 'btn-secondary'}`}
+            className="cat-tab"
             onClick={() => navigate(b.id === boards[0]?.id ? '/' : `/board/${b.id}`)}
           >
-            <span aria-hidden="true">{b.emoji}</span> {b.name}
+            <span className="text-2xl" aria-hidden="true">{b.emoji}</span> {b.name}
           </button>
         ))}
       </div>
 
-      <div className={`grid gap-3 tiles-${settings.tileSize}`}>
+      <div className={`grid gap-3 tiles-${settings.tileSize}`} data-cat={activeIndex % CATEGORY_COLOURS}>
         {tiles.map((t) => (
           <Tile key={t.id} emoji={t.emoji} label={t.label} onClick={() => tapTile(t)} />
         ))}
-        {tiles.length === 0 && <p className="col-span-full p-6 text-center text-2xl text-gray-500">This board has no pictures yet.</p>}
+        {tiles.length === 0 && (
+          <p className="col-span-full p-8 text-center text-2xl" style={{ color: 'var(--ink-muted)' }}>This board has no pictures yet.</p>
+        )}
       </div>
     </div>
   )

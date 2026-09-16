@@ -17,13 +17,16 @@ function PinGate({ pin, onUnlock }: { pin: string; onUnlock: () => void }) {
   }
 
   return (
-    <div className="mx-auto flex max-w-sm flex-col items-center gap-4 p-4">
+    <div className="mx-auto mt-6 flex max-w-sm flex-col items-center gap-4 card card-raised p-6">
+      <span className="wordmark-dot !h-12 !w-12 !text-2xl" aria-hidden="true">🩺</span>
       <h1 className="text-2xl font-bold">Therapist access</h1>
-      <p className="text-gray-600">Enter the PIN to continue.</p>
-      <div className="flex gap-3 text-4xl" aria-live="polite" aria-label={`${entry.length} digits entered`}>
-        {Array.from({ length: pin.length }).map((_, i) => <span key={i}>{i < entry.length ? '●' : '○'}</span>)}
+      <p style={{ color: 'var(--ink-muted)' }}>Enter the PIN to continue.</p>
+      <div className="flex gap-3 text-3xl" aria-live="polite" aria-label={`${entry.length} digits entered`}>
+        {Array.from({ length: pin.length }).map((_, i) => (
+          <span key={i} style={{ color: i < entry.length ? 'var(--primary)' : 'var(--hairline-strong)' }}>{i < entry.length ? '●' : '○'}</span>
+        ))}
       </div>
-      {error && <p className="font-bold text-red-700">Wrong PIN</p>}
+      {error && <p className="verdict verdict-no w-full !py-2 !text-xl">Wrong PIN</p>}
       <div className="grid w-full grid-cols-3 gap-2">
         {['1','2','3','4','5','6','7','8','9','','0','⌫'].map((k, i) =>
           k === '' ? <span key={i} /> : (
@@ -37,8 +40,7 @@ function PinGate({ pin, onUnlock }: { pin: string; onUnlock: () => void }) {
   )
 }
 
-const tab = ({ isActive }: { isActive: boolean }) =>
-  `rounded-xl px-4 py-3 font-bold ${isActive ? 'bg-blue-700 text-white' : 'bg-white text-gray-800 border-2 border-gray-300'}`
+const tab = ({ isActive }: { isActive: boolean }) => `tab ${isActive ? 'tab-active' : ''}`
 
 export default function TherapistLayout() {
   const { settings } = useSettings()
@@ -51,8 +53,11 @@ export default function TherapistLayout() {
 
   return (
     <div className="flex h-full flex-col">
-      <header className="flex flex-wrap items-center gap-2 border-b-2 border-gray-200 bg-white p-3">
-        <span className="mr-2 text-xl font-bold">🩺 Therapist</span>
+      <header className="app-bar flex-wrap">
+        <span className="wordmark !inline-flex">
+          <span className="wordmark-dot" aria-hidden="true">🩺</span>
+          Therapist
+        </span>
         <nav className="flex flex-wrap gap-2" aria-label="Therapist sections">
           <NavLink to="/therapist" className={tab} end>Progress</NavLink>
           <NavLink to="/therapist/boards" className={tab}>Boards</NavLink>
@@ -61,9 +66,9 @@ export default function TherapistLayout() {
           <NavLink to="/therapist/companion" className={tab}>Companion</NavLink>
           <NavLink to="/therapist/settings" className={tab}>Settings</NavLink>
         </nav>
-        <button type="button" className="ml-auto rounded-xl border-2 border-gray-300 bg-white px-4 py-3 font-bold" onClick={exit}>🔒 Lock & exit</button>
+        <button type="button" className="tab ml-auto" onClick={exit}>🔒 Lock &amp; exit</button>
       </header>
-      <main className="flex-1 overflow-y-auto p-4">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
         <Outlet />
       </main>
     </div>

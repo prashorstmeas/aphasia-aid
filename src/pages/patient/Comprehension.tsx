@@ -51,8 +51,8 @@ export default function Comprehension() {
     <RoundShell round={round} type="comprehension" emptyMessage="No questions yet. Ask your therapist to add some.">
       {(q) => (
         <>
-          <div className="card flex w-full flex-col items-center gap-4 py-8">
-            <span className="text-8xl leading-none" aria-hidden="true">{q.emoji}</span>
+          <div className="prompt-card">
+            <span className="text-8xl leading-none" style={{ filter: 'drop-shadow(0 6px 10px rgba(60,45,25,0.16))' }} aria-hidden="true">{q.emoji}</span>
             <p className="text-4xl font-bold leading-snug">{q.text}</p>
             {answered == null && (
               <button type="button" className="btn btn-secondary" onClick={() => { setCueUsed(true); say(q.text) }}>
@@ -68,9 +68,9 @@ export default function Comprehension() {
             </div>
           ) : (
             <div className="flex w-full flex-col gap-3">
-              <p className="text-3xl font-bold">{correct ? '✅ That’s right!' : '🤔 Not quite.'}</p>
+              <p className={`verdict ${correct ? 'verdict-yes' : 'verdict-no'}`}>{correct ? '✅ That’s right!' : '🤔 Not quite.'}</p>
               {!correct && (
-                <p className="text-2xl text-gray-700">The answer is <strong>{q.answer ? 'Yes' : 'No'}</strong>.</p>
+                <p className="text-2xl" style={{ color: 'var(--ink-muted)' }}>The answer is <strong style={{ color: 'var(--ink)' }}>{q.answer ? 'Yes' : 'No'}</strong>.</p>
               )}
               <button type="button" className="btn btn-primary min-h-[88px]" onClick={next}>Next →</button>
             </div>

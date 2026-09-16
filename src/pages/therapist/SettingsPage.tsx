@@ -50,18 +50,18 @@ export default function SettingsPage() {
 
   const Toggle = ({ label, hint, value, onChange }: { label: string; hint: string; value: boolean; onChange: (v: boolean) => void }) => (
     <label className="flex items-center justify-between gap-4 py-2">
-      <span><span className="block font-semibold">{label}</span><span className="block text-sm text-gray-600">{hint}</span></span>
+      <span><span className="block font-semibold">{label}</span><span className="block text-sm text-[var(--ink-muted)]">{hint}</span></span>
       <input type="checkbox" className="h-7 w-7" checked={value} onChange={(e) => onChange(e.target.checked)} />
     </label>
   )
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-4">
-      {msg && <p className="rounded-xl bg-blue-50 p-3 font-semibold text-blue-900" role="status">{msg}</p>}
+      {msg && <p className="rounded-xl bg-[var(--primary-tint)] p-3 font-semibold text-[var(--primary-deep)]" role="status">{msg}</p>}
 
       <section className="card">
         <h2 className="mb-3 text-xl font-bold">Voice</h2>
-        {!ttsSupported && <p className="text-red-700">This browser cannot speak.</p>}
+        {!ttsSupported && <p className="text-[var(--danger)]">This browser cannot speak.</p>}
         <label className="block font-semibold">Voice
           <select className="field mt-1" value={settings.voiceURI ?? ''} onChange={(e) => update({ voiceURI: e.target.value || null })}>
             <option value="">System default</option>
@@ -83,7 +83,7 @@ export default function SettingsPage() {
             <option value="small">Small (most per screen)</option>
           </select>
         </label>
-        <div className="mt-3 divide-y divide-gray-200">
+        <div className="mt-3 divide-y divide-[var(--hairline)]">
           <Toggle label="Speak each picture when tapped" hint="Off = only speak when the Speak button is pressed" value={settings.speakOnTap} onChange={(v) => update({ speakOnTap: v })} />
           <Toggle label="Suggest a score from speech recognition" hint="The patient or helper can always override. Turn off if recognition is unreliable for this speaker." value={settings.autoScore} onChange={(v) => update({ autoScore: v })} />
         </div>
@@ -94,22 +94,22 @@ export default function SettingsPage() {
         <div className="flex flex-wrap gap-2">
           <input className="field w-40" inputMode="numeric" placeholder="New PIN" value={pin.a} onChange={(e) => setPin({ ...pin, a: e.target.value })} aria-label="New PIN" />
           <input className="field w-40" inputMode="numeric" placeholder="Repeat PIN" value={pin.b} onChange={(e) => setPin({ ...pin, b: e.target.value })} aria-label="Repeat new PIN" />
-          <button type="button" className="rounded-xl bg-blue-700 px-4 font-bold text-white" onClick={changePin}>Change PIN</button>
+          <button type="button" className="rounded-xl bg-[var(--primary)] px-4 font-bold text-white" onClick={changePin}>Change PIN</button>
         </div>
-        <p className="mt-2 text-sm text-gray-600">Default PIN is 1234 — change it before handing the device over.</p>
+        <p className="mt-2 text-sm text-[var(--ink-muted)]">Default PIN is 1234 — change it before handing the device over.</p>
       </section>
 
       <section className="card">
         <h2 className="mb-3 text-xl font-bold">Data</h2>
-        <p className="mb-3 text-sm text-gray-600">Everything is stored on this device only. Export a backup before clearing browser data or moving to a new device.</p>
+        <p className="mb-3 text-sm text-[var(--ink-muted)]">Everything is stored on this device only. Export a backup before clearing browser data or moving to a new device.</p>
         <div className="flex flex-wrap gap-2">
           <button type="button" className="btn btn-secondary" onClick={doExport}>⬇️ Export backup</button>
           <button type="button" className="btn btn-secondary" onClick={() => fileRef.current?.click()}>⬆️ Import backup</button>
           <input ref={fileRef} type="file" accept="application/json" className="hidden" onChange={(e) => doImport(e.target.files?.[0])} />
         </div>
-        <div className="mt-4 flex flex-wrap gap-2 border-t border-gray-200 pt-4">
-          <button type="button" className="btn btn-secondary text-red-700" onClick={clearProgress}>Clear practice history</button>
-          <button type="button" className="btn btn-secondary text-red-700" onClick={reset}>Reset boards & words to defaults</button>
+        <div className="mt-4 flex flex-wrap gap-2 border-t border-[var(--hairline)] pt-4">
+          <button type="button" className="btn btn-secondary text-[var(--danger)]" onClick={clearProgress}>Clear practice history</button>
+          <button type="button" className="btn btn-secondary text-[var(--danger)]" onClick={reset}>Reset boards & words to defaults</button>
         </div>
       </section>
     </div>
