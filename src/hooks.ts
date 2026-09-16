@@ -18,8 +18,19 @@ export function useTiles(boardId: number | undefined) {
   ) ?? []
 }
 
+/** Undefined until the query resolves, so callers can tell "still loading" from "none yet". */
 export function useWords() {
-  return useLiveQuery(() => db.words.toArray(), []) ?? []
+  return useLiveQuery(() => db.words.toArray(), [])
+}
+
+/** Undefined until the query resolves, so callers can tell "still loading" from "none yet". */
+export function useSentences() {
+  return useLiveQuery(() => db.sentences.toArray(), [])
+}
+
+/** Undefined until the query resolves, so callers can tell "still loading" from "none yet". */
+export function useQuestions() {
+  return useLiveQuery(() => db.questions.toArray(), [])
 }
 
 export function useAttempts() {

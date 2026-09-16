@@ -24,7 +24,7 @@ function WordForm({ initial, onSubmit, onCancel, submitLabel }: { initial: Omit<
 }
 
 export default function Words() {
-  const words = useWords()
+  const words = useWords() ?? []
   const [editing, setEditing] = useState<number | null>(null)
   const [filter, setFilter] = useState('')
   const categories = [...new Set(words.map((w) => w.category))].sort()

@@ -132,3 +132,31 @@ export function similarity(target: string, heard: string) {
 }
 
 export const SIMILARITY_THRESHOLD = 0.65
+
+const WORD_MATCH_THRESHOLD = 0.7
+
+/**
+ * 0..1 similarity for a whole phrase: the share of the target's words that appear
+ * (fuzzily, each matched at most once) somewhere in what was heard. Word order is
+ * ignored, because recognisers drop and reorder words in disfluent speech.
+ */
+export function phraseSimilarity(target: string, heard: string) {
+  const want = normalize(target).split(' ').filter(Boolean)
+  if (!want.length) return 0
+  let best = 0
+  for (const alt of heard.split('|')) {
+    const got = normalize(alt).split(' ').filter(Boolean)
+    if (!got.length) continue
+    const unused = [...got]
+    let matched = 0
+    for (const w of want) {
+      const i = unused.findIndex((g) => similarity(w, g) >= WORD_MATCH_THRESHOLD)
+      if (i !== -1) { matched++; unused.splice(i, 1) }
+    }
+    best = Math.max(best, matched / want.length)
+  }
+  return best
+}
+
+/** Reading aloud is scored more leniently than single words — missing a small word is not a failure. */
+export const PHRASE_THRESHOLD = 0.6

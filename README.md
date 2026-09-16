@@ -6,19 +6,27 @@ A local-first web app (installable PWA) for people with aphasia or speech impair
 
 **Patient mode** (default, no login)
 - **Talk** – picture boards grouped by category (Basics, People, Needs, Feelings, Pain, Food, Places, Actions). Tapping a picture speaks it and adds it to a sentence strip; **Speak** reads the whole sentence aloud.
-- **Practice** – *Name the picture* (with spoken hints) and *Repeat the word*. Speech recognition suggests a score; the patient or helper always confirms with big ✓ / ✗ buttons, so it still works when recognition is unreliable or unavailable.
+- **Practice** – five exercises, each an 8-item round with a score at the end:
+  - *Name the picture* – see a picture, say what it is, with a spoken hint on request.
+  - *Repeat the word* – hear a word and see it, then say it back.
+  - *Finish the sentence* – a sentence with a gap and four word choices. A wrong choice reveals the answer rather than allowing another guess, so the recorded score reflects the first, unaided response.
+  - *Yes or no* – a comprehension question, shown and read aloud, answered with two large buttons. Questions range from simple facts to the reversible and time-order sentences that are hard in aphasia.
+  - *Read aloud* – read a whole sentence. Scored on how many of its words were heard rather than on an exact match, because recognisers drop and reorder words in disfluent speech.
+
+  The two speaking exercises and *Read aloud* use speech recognition to suggest a score, and the patient or helper always confirms with big ✓ / ✗ buttons, so they still work when recognition is unreliable or unavailable. *Finish the sentence* and *Yes or no* need no microphone at all.
 
 - **Chat** – an AI companion for conversation practice. Free conversation on therapist-chosen topics, or role-play scenarios (order a coffee, call the doctor…). Replies are one or two short sentences, spoken aloud, with tappable word suggestions and a gently offered word when the patient is stuck. Input can be speech, quick tiles, gestures, or a camera snapshot.
 - **Camera (optional, on-device)** – MediaPipe runs in the browser: 👍/👎/✋ gestures and head nods/shakes answer Yes/No/Stop; facial expression shows a mood chip and prompts if pain is detected; repeated mouth movement means "trying to speak" and starts listening. Video never leaves the device. Pressing **Look at what I show** sends a single photo to Claude to work out what the patient is pointing at or holding and offers phrases as tiles.
 
 **Therapist mode** (⚙️, PIN – default `1234`)
-- **Progress** – 7-day stats, daily accuracy chart, per-word accuracy (hardest first), recent attempts.
+- **Progress** – 7-day stats, daily accuracy chart, a breakdown by exercise, per-item accuracy (hardest first, filterable by exercise), recent attempts.
 - **Boards** – add/rename/reorder boards; add/edit/reorder tiles (emoji, label, optional longer spoken phrase).
 - **Practice words** – manage the word list, difficulty, and the hint that is read aloud.
+- **Sentences** – manage the sentence set (the gap is written `___`, with optional wrong choices that are otherwise filled in from your other sentences) and the yes/no question set. Sentences feed both *Finish the sentence* and *Read aloud*.
 - **Companion** – server status, feature toggles (camera, gesture answers, expression), patient profile and interests, topics, role-play scenarios, and a log of conversations with transcripts.
 - **Settings** – voice, speaking speed, tile size, speak-on-tap, auto-scoring, PIN, JSON backup/restore, reset.
 
-All data lives in the browser (IndexedDB) on this device only. Export a backup before clearing browser data.
+All data lives in the browser (IndexedDB) on this device only. Export a backup before clearing browser data. Backups made before the new exercises existed still restore: attempts are carried over to the current format and the seed sentences and questions are restored alongside them.
 
 ## Run it
 
@@ -49,5 +57,5 @@ React 19 · Vite · TypeScript · Tailwind CSS 4 · Dexie (IndexedDB) · vite-pl
 - Accounts and sync so a therapist can follow several patients remotely (the server is the natural place)
 - Per-patient gesture mapping and calibration; tune expression thresholds with real users
 - Real pictogram sets (e.g. ARASAAC) and photo tiles instead of emoji
-- More exercise types: sentence completion, yes/no comprehension, reading aloud
 - Dwell/scan selection for users who cannot tap accurately
+- Pick each round by difficulty, or weight it towards the items the patient gets wrong

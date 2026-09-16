@@ -57,6 +57,7 @@ export default function TherapistLayout() {
           <NavLink to="/therapist" className={tab} end>Progress</NavLink>
           <NavLink to="/therapist/boards" className={tab}>Boards</NavLink>
           <NavLink to="/therapist/words" className={tab}>Practice words</NavLink>
+          <NavLink to="/therapist/sentences" className={tab}>Sentences</NavLink>
           <NavLink to="/therapist/companion" className={tab}>Companion</NavLink>
           <NavLink to="/therapist/settings" className={tab}>Settings</NavLink>
         </nav>
