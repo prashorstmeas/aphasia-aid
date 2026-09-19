@@ -6,7 +6,8 @@ A local-first web app (installable PWA) for people with aphasia or speech impair
 
 **Patient mode** (default, no login)
 - **Talk** – picture boards grouped by category (Basics, People, Needs, Feelings, Pain, Food, Places, Actions). Tapping a picture speaks it and adds it to a sentence strip; **Speak** reads the whole sentence aloud.
-- **Practice** – five exercises, each an 8-item round with a score at the end:
+- **Practice** – five exercises, each a round of items with a score at the end. Rounds are dealt adaptively: items recently missed or answered only with a hint come up sooner, items not seen for a week become due again, mastered items rest, and items never tried sit in between. The end-of-round screen names what to look at again. Round length, difficulty and adaptive dealing are therapist settings.
+
   - *Name the picture* – see a picture, say what it is, with a spoken hint on request.
   - *Repeat the word* – hear a word and see it, then say it back.
   - *Finish the sentence* – a sentence with a gap and four word choices. A wrong choice reveals the answer rather than allowing another guess, so the recorded score reflects the first, unaided response.
@@ -24,7 +25,7 @@ A local-first web app (installable PWA) for people with aphasia or speech impair
 - **Practice words** – manage the word list, difficulty, and the hint that is read aloud.
 - **Sentences** – manage the sentence set (the gap is written `___`, with optional wrong choices that are otherwise filled in from your other sentences) and the yes/no question set. Sentences feed both *Finish the sentence* and *Read aloud*.
 - **Companion** – server status, feature toggles (camera, gesture answers, expression), patient profile and interests, topics, role-play scenarios, and a log of conversations with transcripts.
-- **Settings** – voice, speaking speed, tile size, speak-on-tap, auto-scoring, PIN, JSON backup/restore, reset.
+- **Settings** – voice, speaking speed, tile size, speak-on-tap, auto-scoring, practice rounds (items per round, which difficulties a round may draw from, adaptive dealing on/off), PIN, JSON backup/restore, reset.
 
 All data lives in the browser (IndexedDB) on this device only. Export a backup before clearing browser data. Backups made before the new exercises existed still restore: attempts are carried over to the current format and the seed sentences and questions are restored alongside them.
 
@@ -58,4 +59,4 @@ React 19 · Vite · TypeScript · Tailwind CSS 4 · Dexie (IndexedDB) · vite-pl
 - Per-patient gesture mapping and calibration; tune expression thresholds with real users
 - Real pictogram sets (e.g. ARASAAC) and photo tiles instead of emoji
 - Dwell/scan selection for users who cannot tap accurately
-- Pick each round by difficulty, or weight it towards the items the patient gets wrong
+- Show the therapist which items are due next, and let them pin a few for the next round

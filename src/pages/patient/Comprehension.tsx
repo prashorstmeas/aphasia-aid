@@ -4,7 +4,7 @@ import { useQuestions, useSettings } from '../../hooks'
 import { speak, stopSpeaking } from '../../speech'
 import { RoundShell, useRound } from './round'
 
-const questionMeta = (q: Question) => ({ id: q.id!, text: q.text })
+const questionMeta = (q: Question) => ({ id: q.id!, text: q.text, difficulty: q.difficulty })
 
 /**
  * Yes/no comprehension: the question is shown and read aloud, and answered with two

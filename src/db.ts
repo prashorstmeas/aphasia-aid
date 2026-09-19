@@ -1,4 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie'
+import { DEFAULT_PRACTICE, type PracticeSettings } from './practice-plan'
 
 export type TileSize = 'small' | 'medium' | 'large'
 
@@ -21,6 +22,8 @@ export interface Settings {
   speakOnTap: boolean
   autoScore: boolean
   companion?: CompanionSettings
+  /** Absent in settings saved before adaptive rounds existed; `usePractice` fills the gap. */
+  practice?: PracticeSettings
 }
 
 export interface Conversation {
@@ -160,6 +163,7 @@ export const DEFAULT_SETTINGS: Settings = {
   tileSize: 'large',
   speakOnTap: true,
   autoScore: true,
+  practice: DEFAULT_PRACTICE,
   companion: {
     enabled: true,
     cameraEnabled: true,

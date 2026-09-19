@@ -6,7 +6,7 @@ import { RoundShell, useRound } from './round'
 
 type Phase = 'prompt' | 'listening' | 'result'
 
-const wordMeta = (w: Word) => ({ id: w.id!, text: w.text })
+const wordMeta = (w: Word) => ({ id: w.id!, text: w.text, difficulty: w.difficulty })
 
 /** Say-the-word exercises: name a picture, or repeat a word you just heard. */
 export default function Exercise({ type }: { type: 'naming' | 'repetition' }) {

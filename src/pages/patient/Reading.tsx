@@ -6,7 +6,7 @@ import { RoundShell, useRound } from './round'
 
 type Phase = 'prompt' | 'listening' | 'result'
 
-const sentenceMeta = (s: Sentence) => ({ id: s.id!, text: fillGap(s) })
+const sentenceMeta = (s: Sentence) => ({ id: s.id!, text: fillGap(s), difficulty: s.difficulty })
 
 /**
  * Reading aloud: the whole sentence is shown and the patient reads it. Scoring is

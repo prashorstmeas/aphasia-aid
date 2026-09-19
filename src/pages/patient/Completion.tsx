@@ -6,7 +6,7 @@ import { RoundShell, shuffle, useRound } from './round'
 
 const CHOICES = 4
 
-const sentenceMeta = (s: Sentence) => ({ id: s.id!, text: s.text })
+const sentenceMeta = (s: Sentence) => ({ id: s.id!, text: s.text, difficulty: s.difficulty })
 
 /**
  * Up to `CHOICES` options: the answer plus its own distractors, topped up from other

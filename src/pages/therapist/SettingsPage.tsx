@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { db, exportBackup, importBackup, resetToDefaults, type TileSize } from '../../db'
-import { useSettings } from '../../hooks'
+import { useSettings, usePractice } from '../../hooks'
+import { LEVEL_LABELS, ROUND_SIZES, type PracticeLevel } from '../../practice-plan'
 import { getVoices, speak, ttsSupported } from '../../speech'
 
 export default function SettingsPage() {
   const { settings, update } = useSettings()
+  const { practice, updatePractice } = usePractice()
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
   const [pin, setPin] = useState({ a: '', b: '' })
   const [msg, setMsg] = useState<string | null>(null)
@@ -86,6 +88,35 @@ export default function SettingsPage() {
         <div className="mt-3 divide-y divide-[var(--hairline)]">
           <Toggle label="Speak each picture when tapped" hint="Off = only speak when the Speak button is pressed" value={settings.speakOnTap} onChange={(v) => update({ speakOnTap: v })} />
           <Toggle label="Suggest a score from speech recognition" hint="The patient or helper can always override. Turn off if recognition is unreliable for this speaker." value={settings.autoScore} onChange={(v) => update({ autoScore: v })} />
+        </div>
+      </section>
+
+      <section className="card">
+        <h2 className="mb-3 text-xl font-bold">Practice rounds</h2>
+        <label className="block font-semibold">Questions in a round
+          <select className="field mt-1" value={practice.roundSize} onChange={(e) => updatePractice({ roundSize: Number(e.target.value) })}>
+            {ROUND_SIZES.map((n) => <option key={n} value={n}>{n}{n === 8 ? ' (default)' : ''}</option>)}
+          </select>
+        </label>
+        <label className="mt-3 block font-semibold">Difficulty
+          <select
+            className="field mt-1"
+            value={String(practice.level)}
+            onChange={(e) => updatePractice({ level: (e.target.value === 'all' ? 'all' : Number(e.target.value)) as PracticeLevel })}
+          >
+            {(['all', 1, 2, 3] as PracticeLevel[]).map((l) => <option key={l} value={String(l)}>{LEVEL_LABELS[String(l)]}</option>)}
+          </select>
+        </label>
+        <p className="mt-1 text-sm text-[var(--ink-muted)]">
+          Applies to every exercise. If nothing is left at that level, the whole set is used rather than blocking practice.
+        </p>
+        <div className="mt-3 divide-y divide-[var(--hairline)]">
+          <Toggle
+            label="Practise the hard items more often"
+            hint="Rounds lean towards items recently missed or answered with a hint, and towards items not seen for a while. Off = pick at random."
+            value={practice.adaptive}
+            onChange={(v) => updatePractice({ adaptive: v })}
+          />
         </div>
       </section>
 

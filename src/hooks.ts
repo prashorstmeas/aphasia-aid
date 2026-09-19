@@ -1,10 +1,20 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, DEFAULT_SETTINGS, type CompanionSettings, type Settings, type Tile } from './db'
+import { DEFAULT_PRACTICE, type PracticeSettings } from './practice-plan'
 
 export function useSettings() {
-  const settings = useLiveQuery(() => db.settings.get('main'), []) ?? DEFAULT_SETTINGS
+  const stored = useLiveQuery(() => db.settings.get('main'), [])
   const update = (patch: Partial<Settings>) => db.settings.update('main', patch)
-  return { settings, update }
+  // `loaded` lets callers that act on a setting once — dealing a round, say — wait for the
+  // real value instead of acting on the defaults the live query returns while in flight.
+  return { settings: stored ?? DEFAULT_SETTINGS, loaded: stored !== undefined, update }
+}
+
+export function usePractice() {
+  const { settings, loaded, update } = useSettings()
+  const practice: PracticeSettings = { ...DEFAULT_PRACTICE, ...settings.practice }
+  const updatePractice = (patch: Partial<PracticeSettings>) => update({ practice: { ...practice, ...patch } })
+  return { practice, loaded, updatePractice }
 }
 
 export function useBoards() {
