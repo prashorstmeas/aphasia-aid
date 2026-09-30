@@ -66,7 +66,7 @@ export default function SettingsPage() {
         {!ttsSupported && <p className="text-[var(--danger)]">This browser cannot speak.</p>}
         <label className="block font-semibold">Voice
           <select className="field mt-1" value={settings.voiceURI ?? ''} onChange={(e) => update({ voiceURI: e.target.value || null })}>
-            <option value="">System default</option>
+            <option value="">Default (Australian English if available)</option>
             {voices.map((v) => <option key={v.voiceURI} value={v.voiceURI}>{v.name} ({v.lang})</option>)}
           </select>
         </label>

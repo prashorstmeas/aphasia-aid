@@ -24,6 +24,17 @@ const RecognitionImpl: RecognitionCtor | undefined =
 
 export const recognitionSupported = !!RecognitionImpl
 
+/** Language for speech recognition, and for speech when no voice is chosen. */
+export const SPEECH_LANG = 'en-AU'
+
+const langOf = (v: SpeechSynthesisVoice) => v.lang.replace('_', '-')
+
+/** The therapist's chosen voice if it exists, else the first Australian English voice, else none (browser default). */
+function pickVoice(voiceURI?: string | null) {
+  const voices = speechSynthesis.getVoices()
+  return (voiceURI && voices.find((v) => v.voiceURI === voiceURI)) || voices.find((v) => langOf(v) === SPEECH_LANG) || null
+}
+
 /** Voices load asynchronously in most browsers; resolve once the list is non-empty (or give up after 1s). */
 export function getVoices(): Promise<SpeechSynthesisVoice[]> {
   if (!ttsSupported) return Promise.resolve([])
@@ -49,10 +60,9 @@ export function speak(text: string, opts: SpeakOptions = {}): Promise<void> {
   speechSynthesis.cancel()
   const u = new SpeechSynthesisUtterance(text)
   u.rate = opts.rate ?? 0.85
-  if (opts.voiceURI) {
-    const v = speechSynthesis.getVoices().find((v) => v.voiceURI === opts.voiceURI)
-    if (v) u.voice = v
-  }
+  const v = pickVoice(opts.voiceURI)
+  if (v) u.voice = v
+  u.lang = v ? langOf(v) : SPEECH_LANG
   return new Promise((resolve) => {
     u.onend = () => resolve()
     u.onerror = () => resolve()
@@ -72,7 +82,7 @@ export interface ListenOptions {
 }
 
 /** Listen for a single utterance. Resolves with the transcript, or null on silence/error/unsupported. */
-export function listenOnce({ lang = 'en-US', timeoutMs = 7000, onReady }: ListenOptions = {}): Promise<string | null> {
+export function listenOnce({ lang = SPEECH_LANG, timeoutMs = 7000, onReady }: ListenOptions = {}): Promise<string | null> {
   if (!RecognitionImpl) return Promise.resolve(null)
   return new Promise((resolve) => {
     const rec = new RecognitionImpl!()
@@ -95,12 +105,12 @@ export function listenOnce({ lang = 'en-US', timeoutMs = 7000, onReady }: Listen
     rec.onerror = () => finish(null)
     rec.onend = () => finish(null)
     try { rec.start() } catch { finish(null); return }
-    // Ask the recognizer to stop; onresult/onend then settle the promise. Fall back to null if nothing arrives.
+    // Ask the recogniser to stop; onresult/onend then settle the promise. Fall back to null if nothing arrives.
     onReady?.(() => { try { rec.stop() } catch { finish(null) }; setTimeout(() => finish(null), 800) })
   })
 }
 
-export function normalize(s: string) {
+export function normalise(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim()
 }
 
@@ -114,13 +124,13 @@ function levenshtein(a: string, b: string) {
   return dp[m][n]
 }
 
-/** 0..1 similarity between the target word and what was heard (best over recognizer alternatives and individual words). */
+/** 0..1 similarity between the target word and what was heard (best over recogniser alternatives and individual words). */
 export function similarity(target: string, heard: string) {
-  const t = normalize(target)
+  const t = normalise(target)
   if (!t) return 0
   let best = 0
   for (const alt of heard.split('|')) {
-    const h = normalize(alt)
+    const h = normalise(alt)
     if (!h) continue
     if (h === t || h.split(' ').includes(t)) return 1
     for (const candidate of [h, ...h.split(' ')]) {
@@ -141,11 +151,11 @@ const WORD_MATCH_THRESHOLD = 0.7
  * ignored, because recognisers drop and reorder words in disfluent speech.
  */
 export function phraseSimilarity(target: string, heard: string) {
-  const want = normalize(target).split(' ').filter(Boolean)
+  const want = normalise(target).split(' ').filter(Boolean)
   if (!want.length) return 0
   let best = 0
   for (const alt of heard.split('|')) {
-    const got = normalize(alt).split(' ').filter(Boolean)
+    const got = normalise(alt).split(' ').filter(Boolean)
     if (!got.length) continue
     const unused = [...got]
     let matched = 0
