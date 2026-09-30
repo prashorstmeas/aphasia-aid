@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod'
 
 const PORT = Number(process.env.PORT ?? 8787)
-const MODEL = 'claude-opus-5'
+const MODEL = 'claude-opus-5-5'
 const client = new Anthropic() // reads ANTHROPIC_API_KEY (or an `ant auth login` profile)
 
 const app = express()
